@@ -39,7 +39,7 @@ export default function App() {
           <Meta />
           <Links />
         </head>
-        <body>
+        <body style={{ minHeight: "100vh", minWidth: "100vw" }}>
           <Outlet />
           <ScrollRestoration />
           <Scripts />
