@@ -1,6 +1,7 @@
 import { Record } from "pocketbase";
 import { Admin } from "pocketbase";
 import PocketBase, { BaseAuthStore } from "pocketbase";
+import { useEffect, useState } from "react";
 
 // TAKEN FROM Pocketbase's source code,
 // https://github.com/pocketbase/js-sdk/blob/7956bfe992cea931a120f039e0d50c479e910e84/src/stores/utils/cookie.ts#L25
@@ -181,4 +182,15 @@ export const client: PocketBase = new PocketBase(
 
 export function useClient() {
   return client;
+}
+
+export function useLoggedIn() {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    client.authStore.onChange(() => setLoggedIn(!!client.authStore.token));
+    setLoggedIn(!!client.authStore.token);
+  }, []);
+
+  return loggedIn;
 }

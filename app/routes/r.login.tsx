@@ -8,7 +8,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useNavigate } from "@remix-run/react";
-import { useClient } from "~/hooks/client";
+import { useClient, useLoggedIn } from "~/hooks/client";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { showNotification } from "@mantine/notifications";
@@ -27,7 +27,8 @@ const useStyles = createStyles(
 
 export default function Index() {
   const client = useClient();
-  const { classes } = useStyles({ loggedIn: !!client.authStore.token });
+  const loggedIn = useLoggedIn();
+  const { classes } = useStyles({ loggedIn });
   const navigate = useNavigate();
   const form = useForm({
     initialValues: {
@@ -90,6 +91,8 @@ export default function Index() {
           })}
         >
           <TextInput
+            id="username"
+            autoComplete="username"
             label="Username"
             placeholder="The Banana Man"
             required
@@ -97,6 +100,8 @@ export default function Index() {
             {...form.getInputProps("username")}
           />
           <PasswordInput
+            id="password"
+            autoComplete="current-password"
             label="Password"
             placeholder="Definitely not 1234"
             required
