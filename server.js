@@ -8,7 +8,8 @@ class AuthStore extends BaseAuthStore {
   constructor(cookie, key) {
     super();
 
-    this.loadFromCookie(cookie, key);
+    this.key = key || "pb_auth";
+    this.loadFromCookie(cookie, this.key);
   }
 
   save(token, model) {
@@ -49,9 +50,9 @@ export async function onRequest(context) {
   const client = new PocketBase(
     process.env.NODE_ENV === "production"
       ? "https://api.pnw-staff.mrvillage.dev"
-      : "http://127.0.0.1:8090",
-    new AuthStore(context.request.headers.get("Cookie"))
+      : "http://127.0.0.1:8090"
   );
+  client.authStore = new AuthStore(context.request.headers.get("Cookie"));
   context.client = client;
   const response = await handleRequest(context);
   if (client.authStore.setCookie) {

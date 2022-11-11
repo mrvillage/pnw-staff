@@ -32,7 +32,6 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function Index() {
-  console.log("test");
   const client = useClient();
   const { classes } = useStyles();
   const [cardMounted, setCardMounted] = useState(false);

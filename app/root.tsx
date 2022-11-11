@@ -1,4 +1,8 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/cloudflare";
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/cloudflare";
 import {
   Links,
   LiveReload,
@@ -11,6 +15,7 @@ import { createEmotionCache } from "@mantine/core";
 import { StylesPlaceholder } from "@mantine/remix";
 import Providers from "~/context/Providers";
 import PageScrollArea from "./components/PageScrollArea";
+import { client } from "./hooks/client";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -27,6 +32,11 @@ export const links: LinksFunction = () => {
       type: "image/png",
     },
   ];
+};
+
+export const loader: LoaderFunction = ({ request }) => {
+  client.authStore.loadFromCookie(request.headers.get("Cookie") || "");
+  return null;
 };
 
 createEmotionCache({ key: "mantine" });

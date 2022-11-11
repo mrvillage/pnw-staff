@@ -1,7 +1,6 @@
 import { Record } from "pocketbase";
 import { Admin } from "pocketbase";
 import PocketBase, { BaseAuthStore } from "pocketbase";
-import { useMemo } from "react";
 
 // TAKEN FROM Pocketbase's source code,
 // https://github.com/pocketbase/js-sdk/blob/7956bfe992cea931a120f039e0d50c479e910e84/src/stores/utils/cookie.ts#L25
@@ -168,20 +167,18 @@ class AuthStore extends BaseAuthStore {
   }
 }
 
+export const client: PocketBase = new PocketBase(
+  (
+    typeof window === "undefined"
+      ? process.env.NODE_ENV === "production"
+      : window.location.hostname !== "localhost" &&
+        window.location.hostname !== "127.0.0.1"
+  )
+    ? "https://api.pnw-staff.mrvillage.dev"
+    : "http://localhost:8090",
+  new AuthStore()
+);
+
 export function useClient() {
-  return useMemo(
-    () =>
-      new PocketBase(
-        (
-          typeof window === "undefined"
-            ? process.env.NODE_ENV === "production"
-            : window.location.hostname !== "localhost" &&
-              window.location.hostname !== "127.0.0.1"
-        )
-          ? "https://api.pnw-staff.mrvillage.dev"
-          : "http://localhost:8090",
-        new AuthStore()
-      ),
-    []
-  );
+  return client;
 }
