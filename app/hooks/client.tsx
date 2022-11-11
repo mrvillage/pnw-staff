@@ -170,7 +170,18 @@ class AuthStore extends BaseAuthStore {
 
 export function useClient() {
   return useMemo(
-    () => new PocketBase("http://localhost:8090", new AuthStore()),
+    () =>
+      new PocketBase(
+        (
+          typeof window === "undefined"
+            ? process.env.NODE_ENV === "production"
+            : window.location.hostname === "localhost" ||
+              window.location.hostname === "127.0.0.1"
+        )
+          ? "https://api.pnw-staff.mrvillage.dev"
+          : "http://localhost:8090",
+        new AuthStore()
+      ),
     []
   );
 }
