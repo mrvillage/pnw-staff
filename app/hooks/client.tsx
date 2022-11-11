@@ -160,8 +160,8 @@ class AuthStore extends BaseAuthStore {
         secure:
           typeof window === "undefined"
             ? process.env.NODE_ENV === "production"
-            : window.location.hostname === "localhost" ||
-              window.location.hostname === "127.0.0.1",
+            : window.location.hostname !== "localhost" &&
+              window.location.hostname !== "127.0.0.1",
       },
       key || this.key
     );
@@ -175,8 +175,8 @@ export function useClient() {
         (
           typeof window === "undefined"
             ? process.env.NODE_ENV === "production"
-            : window.location.hostname === "localhost" ||
-              window.location.hostname === "127.0.0.1"
+            : window.location.hostname !== "localhost" &&
+              window.location.hostname !== "127.0.0.1"
         )
           ? "https://api.pnw-staff.mrvillage.dev"
           : "http://localhost:8090",
