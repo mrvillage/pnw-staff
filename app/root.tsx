@@ -10,6 +10,7 @@ import {
 import { createEmotionCache } from "@mantine/core";
 import { StylesPlaceholder } from "@mantine/remix";
 import Providers from "~/context/Providers";
+import PageScrollArea from "./components/PageScrollArea";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -39,8 +40,10 @@ export default function App() {
           <Meta />
           <Links />
         </head>
-        <body style={{ minHeight: "100vh", minWidth: "100vw" }}>
-          <Outlet />
+        <body style={{ minHeight: "100vh", width: "100vw" }}>
+          <PageScrollArea>
+            <Outlet />
+          </PageScrollArea>
           <ScrollRestoration />
           <Scripts />
           <LiveReload />

@@ -3,12 +3,21 @@ import {
   Card,
   Center,
   createStyles,
-  Stack,
   Text,
   Transition,
 } from "@mantine/core";
+import type { LoaderFunction } from "@remix-run/cloudflare";
+import { redirect } from "@remix-run/cloudflare";
 import { useEffect, useState } from "react";
+import { CenterStack } from "~/components/CenterStack";
 import { useClient } from "~/hooks/client";
+
+export const loader: LoaderFunction = async ({ context }) => {
+  if (context.client.authStore.token) {
+    return redirect("/home");
+  }
+  return null;
+};
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -23,6 +32,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function Index() {
+  console.log("test");
   const client = useClient();
   const { classes } = useStyles();
   const [cardMounted, setCardMounted] = useState(false);
@@ -32,7 +42,7 @@ export default function Index() {
     setCardMounted(true);
   }, []);
   const login = async () => {
-    const providers = await client.users.listAuthMethods();
+    const providers = await client.collection("users").listAuthMethods();
     for (const provider of providers.authProviders) {
       if (provider.name === "discord") {
         localStorage.setItem("redirectProvider", JSON.stringify(provider));
@@ -44,11 +54,7 @@ export default function Index() {
     }
   };
   return (
-    <Stack
-      align="center"
-      justify="center"
-      sx={{ position: "absolute", height: "100%", width: "100%" }}
-    >
+    <CenterStack>
       <Transition
         transition="scale-x"
         duration={1000}
@@ -99,6 +105,6 @@ export default function Index() {
           </Card>
         )}
       </Transition>
-    </Stack>
+    </CenterStack>
   );
 }

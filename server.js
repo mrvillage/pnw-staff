@@ -5,10 +5,10 @@ import PocketBase, { BaseAuthStore } from "pocketbase";
 class AuthStore extends BaseAuthStore {
   setCookie = false;
 
-  constructor(cookie) {
+  constructor(cookie, key) {
     super();
 
-    this.loadFromCookie(cookie);
+    this.loadFromCookie(cookie, key);
   }
 
   save(token, model) {
@@ -21,6 +21,17 @@ class AuthStore extends BaseAuthStore {
     super.clear();
 
     this.setCookie = true;
+  }
+
+  exportToCookie(options, key) {
+    return super.exportToCookie(
+      {
+        ...options,
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+      },
+      key || this.key
+    );
   }
 }
 
@@ -38,13 +49,18 @@ export async function onRequest(context) {
   const client = new PocketBase(
     process.env.NODE_ENV === "production"
       ? "https://api.pnw-staff.mrvillage.dev"
-      : "http://127.0.0.1:8090"
+      : "http://127.0.0.1:8090",
+    new AuthStore(context.request.headers.get("Cookie"))
   );
-  client.authStore = new AuthStore(context.request.headers.get("Cookie"));
   context.client = client;
   const response = await handleRequest(context);
   if (client.authStore.setCookie) {
-    response.headers.append("Set-Cookie", client.authStore.exportToCookie());
+    response.headers.append(
+      "Set-Cookie",
+      client.authStore.exportToCookie({
+        secure: process.env.NODE_ENV === "production",
+      })
+    );
   }
   response.headers.append(
     "A-SENT-COOKIE",

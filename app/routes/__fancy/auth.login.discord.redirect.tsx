@@ -1,7 +1,7 @@
 import { useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { useClient } from "~/hooks/client";
-import { IconAlertCircle } from "@tabler/icons";
+import { IconAlertCircle, IconCheck } from "@tabler/icons";
 import { showNotification, updateNotification } from "@mantine/notifications";
 
 export default function Redirect() {
@@ -28,27 +28,38 @@ export default function Redirect() {
       return setError(true);
     }
     const data = JSON.parse(provider);
-    console.log(params);
     if (params.get("state") !== data.state) {
       console.error("invalid state");
       return setError(true);
     }
-    client.users
-      .authViaOAuth2(
+    client
+      .collection("users")
+      .authWithOAuth2(
         data.name,
         params.get("code") || "",
         data.codeVerifier,
         redirectUrl
       )
       .then((authData) => {
+        client.authStore.save(authData.token, authData.record);
         navigate("/home");
+        updateNotification({
+          id: "login",
+          title: "Logged in!",
+          message: "You have been logged in successfully!",
+          icon: <IconCheck size={18} />,
+          loading: false,
+          autoClose: true,
+          disallowClose: false,
+          color: "green",
+        });
       })
       .catch((err) => {
         console.error(err);
         setError(true);
       });
-    // localStorage.removeItem("redirectProvider");
-    // localStorage.removeItem("redirectUrl");
+    localStorage.removeItem("redirectProvider");
+    localStorage.removeItem("redirectUrl");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
