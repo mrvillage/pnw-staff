@@ -185,7 +185,7 @@ export function useClient() {
 }
 
 export function useLoggedIn() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(!!client.authStore.token);
 
   useEffect(() => {
     client.authStore.onChange(() => setLoggedIn(!!client.authStore.token));
