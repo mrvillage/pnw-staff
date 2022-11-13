@@ -50,7 +50,13 @@ export default function App() {
           <Meta />
           <Links />
         </head>
-        <body style={{ minHeight: "100vh", width: "100vw" }}>
+        <body
+          style={{
+            minHeight: "100vh",
+            // display: "flex",
+            // flexDirection: "column",
+          }}
+        >
           <PageScrollArea>
             <Outlet />
           </PageScrollArea>

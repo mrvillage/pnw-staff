@@ -21,16 +21,10 @@ const useStyles = createStyles((theme) => ({
     }`,
   },
 
-  burger: {
-    [theme.fn.largerThan("xs")]: {
-      display: "none",
-    },
-  },
-
   tabs: {
-    [theme.fn.smallerThan("xs")]: {
-      display: "none",
-    },
+    // [theme.fn.smallerThan("xs")]: {
+    //   display: "none",
+    // },
   },
 
   tabsList: {
@@ -119,7 +113,7 @@ export default function Index() {
           </Tabs.List>
         </Tabs>
       </Center>
-      <PageScrollArea>
+      <PageScrollArea minus={38}>
         <Outlet />
       </PageScrollArea>
     </div>
